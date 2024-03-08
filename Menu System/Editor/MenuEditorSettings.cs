@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Omnix.Editor;
 using UnityEditor;
 using UnityEngine;
 
@@ -74,7 +75,7 @@ namespace MenuManagement.Editor
 
         }
 
-        [MenuItem("Window/Dynamic Menu/Select Menu Storage")]
+        [MenuItem(OmnixMenu.STORAGE_MENU + "Dynamic Menu Storage")]
         private static void SelectStorage()
         {
             EditorGUIUtility.PingObject(Instance);

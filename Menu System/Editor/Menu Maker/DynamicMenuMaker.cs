@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Omnix.Editor;
 using Unity.Plastic.Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
@@ -33,10 +34,11 @@ namespace MenuManagement.Editor
         private string _menuClassName;
         private List<PropPair> _includedProperties;
         private CompilePair[] _compileVariables;
+        private bool _hasCommonObject;
         private Vector2 _propsSelectorPosition;
         private Vector2 _compileSelectorPosition;
 
-        [MenuItem("Window/Dynamic Menu/Script Creator")]
+        [MenuItem(OmnixMenu.WINDOW_MENU + "Dynamic Menu Script Creator")]
         private static void ShowWindow()
         {
             GetWindow(typeof(DynamicMenuMaker), false, "Dynamic Menu Script Creator");
@@ -105,6 +107,7 @@ namespace MenuManagement.Editor
             {
                 pair.isIncluded = EditorGUILayout.ToggleLeft(pair.content, pair.isIncluded);
             }
+
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndScrollView();
         }
@@ -148,6 +151,11 @@ namespace MenuManagement.Editor
             _prefabClassName = EditorGUILayout.TextField("Prefab Class Type", _prefabClassName);
             _menuClassName = EditorGUILayout.TextField("Menu Class Type", _menuClassName);
             DrawFolderField();
+            _hasCommonObject = EditorGUILayout.Toggle("Has Common Object", _hasCommonObject);
+            EditorGUILayout.LabelField("Common object can be anything that is necessary for the item prefab.");
+            EditorGUILayout.LabelField("This single object instance is shared between all prefab instances, making it inefficient to serialize it in prefab.");
+            EditorGUILayout.LabelField("A simple solution can be to store it in menu, and provide it to prefab instance as required.");
+
             EditorGUILayout.BeginHorizontal();
             DrawCompileVariables();
             DrawPropertiesSelector();
@@ -241,6 +249,8 @@ namespace MenuManagement.Editor
             var settings = new ScriptGenerator();
             if (!string.IsNullOrEmpty(usingCode)) settings.compileVariables.Add("has_name_space");
             settings.compileVariables.Add("true");
+            if (_hasCommonObject) settings.compileVariables.Add("has_common_object");
+            else settings.compileVariables.Add("no_common_object");
             settings.compileVariables.UnionWith(_compileVariables.Where(p => p.value).Select(p => p.name));
 
             settings.placeholderValues.Add("MENU_CLASS", _menuClassName);

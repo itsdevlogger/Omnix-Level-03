@@ -5,14 +5,14 @@ using UnityEngine;
 
 namespace MenuManagement.Demos
 {
-    public class InventoryMenu : BaseDynamicMenu<InventoryItem, InventoryMenuItemPrefab, InventoryMenu>
+    public class InventoryMenu : BaseDynamicMenu<InventoryItem, InventoryMenuItemPrefab>
     {
         [SerializeField] private List<InventoryItem> infos;
         [SerializeField] private InventoryMenu[] otherMenus;
         [SerializeField] private RectTransform selectedOption;
         [SerializeField] private Vector2 selectedAnchored;
 
-        protected override InventoryMenu CommonObject => this;
+        // protected override InventoryMenu CommonObject => this;
 
         protected override IEnumerable<InventoryItem> GetItems()
         {

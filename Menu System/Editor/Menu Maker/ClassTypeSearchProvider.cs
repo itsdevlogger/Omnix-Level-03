@@ -29,8 +29,8 @@ namespace MenuManagement.Editor
             entries.Add(new SearchTreeGroupEntry(new GUIContent("Select Class"), 0));
             foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
-                string assemblyFullName = assembly.FullName;
-                if (assemblyFullName.Contains("Unity") || assemblyFullName.Contains("Editor") || assemblyFullName.Contains("mscorlib") || assemblyFullName.Contains("System"))
+                string assemblyFullName = assembly.FullName.ToLower();
+                if (assemblyFullName.StartsWith("unity") || assemblyFullName.StartsWith("system") || assemblyFullName.Contains("editor") || assemblyFullName.Contains("mscorlib"))
                 {
                     continue;
                 }

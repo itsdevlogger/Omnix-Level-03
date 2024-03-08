@@ -8,11 +8,17 @@ namespace CST_NAME_SPACE
 {
 // @cst_indent += 4
 #endif
+
+#if cst_has_common_object
 public class CST_PREFAB_CLASS : BaseItemPrefab<CST_DATA_CLASS, CST_MENU_CLASS>
+#endif
+#if cst_no_common_object
+public class CST_PREFAB_CLASS : BaseItemPrefab<CST_DATA_CLASS>
+#endif
 {
 /*CST_CODE_FIELDS*/
 
-    public override void OnSetup(CST_DATA_CLASS data)
+    protected override void OnSetup(CST_DATA_CLASS data)
     {
 /*CST_CODE_SETUP*/
     }

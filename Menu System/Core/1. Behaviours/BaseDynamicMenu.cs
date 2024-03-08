@@ -8,6 +8,18 @@ using UnityEngine.UI;
 
 namespace MenuManagement.Behaviours
 {
+    public abstract class BaseDynamicMenu<TData, TUiComponent, TCommonObject> : BaseDynamicMenu<TData, TUiComponent>
+        where TUiComponent : BaseItemPrefab<TData, TCommonObject>
+    {
+        /// <summary> Get the common object shared by both Menu and Item </summary>
+        protected abstract TCommonObject CommonObject { get; }
+
+        protected override void SetupItem(TUiComponent instance, TData data)
+        {
+            instance.SetupSelf(this, CommonObject, data);
+        }
+    }
+    
     /// <summary>
     /// Base Class for the menu which is dynamically created.
     /// This menu is used to display some type of data to the user, and get some commands from them.
@@ -17,8 +29,8 @@ namespace MenuManagement.Behaviours
     /// <typeparam name="TCommonObject"> Type of any object that both the menu and prefab will be using </typeparam>
     [GroupEvents("onItemSelected", "onItemDeselected", "onItemConfirmed")]
     [GroupRuntimeConstant("activateOnError", "deactivateOnError")]
-    public abstract class BaseDynamicMenu<TData, TUiComponent, TCommonObject> : BaseMenu, IDynamicMenu<TData>
-        where TUiComponent : BaseItemPrefab<TData, TCommonObject>
+    public abstract class BaseDynamicMenu<TData, TUiComponent> : BaseMenu, IDynamicMenu<TData>
+        where TUiComponent : BaseItemPrefab<TData>
     {
         #region Class
         [Serializable]
@@ -70,9 +82,6 @@ namespace MenuManagement.Behaviours
         #endregion
 
         #region Abstract
-        /// <summary> Get the common object shared by both Menu and Item </summary>
-        protected abstract TCommonObject CommonObject { get; }
-
         /// <summary> Loop through of all the possible elements may need to be displayed in the UI. You can check if a particular element can be displayed in <see cref="ShouldDisplayItem"/> </summary>
         protected abstract IEnumerable<TData> GetItems();
         #endregion
@@ -128,6 +137,11 @@ namespace MenuManagement.Behaviours
         protected virtual void OnItemConfirmed(TData data, TUiComponent item)
         {
         }
+
+        protected virtual void SetupItem(TUiComponent instance, TData data)
+        {
+            instance.SetupSelf(this, data);
+        }
         #endregion
 
         #region Overrides
@@ -156,7 +170,7 @@ namespace MenuManagement.Behaviours
         {
             if (Selected.previewItem)
             {
-                Selected.previewItem.SetupSelf(this, CommonObject, Selected.previewDefaultVales, false);
+                SetupItem(Selected.previewItem, Selected.previewDefaultVales);
             }
             DestroyAllInstances();
         }
@@ -220,7 +234,7 @@ namespace MenuManagement.Behaviours
                         dataToSelect = data;
                     }
 
-                    item.SetupSelf(this, CommonObject, data, false);
+                    SetupItem(item, data);
                     Instances.Add(data, item);
                     loadingFailed = false;
                 }
@@ -239,7 +253,7 @@ namespace MenuManagement.Behaviours
             {
                 if (Selected.previewItem)
                 {
-                    Selected.previewItem.SetupSelf(this, CommonObject, Selected.previewDefaultVales, false);
+                    SetupItem(Selected.previewItem, Selected.previewDefaultVales);
                 }
 
                 SetError(true);
@@ -253,7 +267,7 @@ namespace MenuManagement.Behaviours
                 }
                 else if (Selected.previewItem)
                 {
-                    Selected.previewItem.SetupSelf(this, CommonObject, Selected.previewDefaultVales, false);
+                    SetupItem(Selected.previewItem, Selected.previewDefaultVales);
                 }
             }
         }
@@ -270,7 +284,7 @@ namespace MenuManagement.Behaviours
             Selected.Item = item;
             Selected.ItemData = data;
             UpdateChildToggles();
-            if (Selected.previewItem) Selected.previewItem.SetupSelf(this, CommonObject, data, false);
+            if (Selected.previewItem) SetupItem(Selected.previewItem, data);
 
             item.OnSelect();
             onItemSelected?.Invoke(data, item);
@@ -343,7 +357,7 @@ namespace MenuManagement.Behaviours
                 onItemDeselected?.Invoke(Selected.ItemData, Selected.Item);
                 Selected.Item = null;
                 Selected.ItemData = default;
-                if (Selected.previewItem) Selected.previewItem.SetupSelf(this, CommonObject, Selected.previewDefaultVales, false);
+                if (Selected.previewItem) SetupItem(Selected.previewItem, Selected.previewDefaultVales);
                 UpdateChildToggles();
             }
         }

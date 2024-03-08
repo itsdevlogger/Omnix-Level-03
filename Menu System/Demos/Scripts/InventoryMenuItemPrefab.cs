@@ -5,13 +5,13 @@ using UnityEngine;
 
 namespace MenuManagement.Demos
 {
-    public class InventoryMenuItemPrefab : BaseItemPrefab<InventoryItem, InventoryMenu>
+    public class InventoryMenuItemPrefab : BaseItemPrefab<InventoryItem>
     {
         [SerializeField] private TextMeshProUGUI nameField;
         [SerializeField] private Image iconField;
         [SerializeField] private TextMeshProUGUI countField;
 
-        public override void OnSetup(InventoryItem data)
+        protected override void OnSetup(InventoryItem data)
         {
             nameField.text = data.name;
             iconField.sprite = data.icon;
