@@ -1,0 +1,17 @@
+{
+    "name": "Omnix.SceneManagement",
+    "rootNamespace": "",
+    "references": [
+        "GUID:3711d7a782fd4b04f85fd308aadfb01b",
+        "GUID:06682afdbe9d1ad4dbae848fe6f6fe1d"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
